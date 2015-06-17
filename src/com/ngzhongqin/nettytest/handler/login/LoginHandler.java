@@ -4,6 +4,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
+import org.apache.log4j.Logger;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
@@ -13,17 +14,14 @@ import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class LoginHandler {
+    public Logger logger = Logger.getLogger(LoginHandler.class);
+
     public LoginHandler(){
 
     }
 
     public void login(ChannelHandlerContext ctx, FullHttpRequest req, String username, String password){
-
-        System.out.println("inside Login Handler");
-
-        System.out.println("req.toString: "+req.toString());
-
-
+        logger.info("Method: login");
 
 
         byte[] CONTENT = { 'L', 'o', 'g', 'i', 'n', };
