@@ -1,73 +1,35 @@
 package com.ngzhongqin.nettytest.handler.login;
 
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
+import com.ngzhongqin.nettytest.framework.response.HTTPResponder;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
-import static io.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
-import static io.netty.handler.codec.http.HttpResponseStatus.OK;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class LoginHandler {
     public Logger logger = Logger.getLogger(LoginHandler.class);
+    private HTTPResponder httpResponder;
 
     public LoginHandler(){
-
+         this.httpResponder = new HTTPResponder();
     }
 
-    public void login(ChannelHandlerContext ctx, FullHttpRequest req, String username, String password){
+    public void login(ChannelHandlerContext ctx, FullHttpRequest req){
         logger.info("Method: login");
-
-
-        byte[] CONTENT = { 'L', 'o', 'g', 'i', 'n', };
-
-        if (HttpHeaders.is100ContinueExpected(req)) {
-            ctx.write(new DefaultFullHttpResponse(HTTP_1_1, CONTINUE));
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("accesstoken","123456");
+        } catch (JSONException e) {
+            logger.error("Fail to put key pair value in JSON object");
         }
-        boolean keepAlive = HttpHeaders.isKeepAlive(req);
-        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(CONTENT));
+
+        httpResponder.respond(ctx,req,jsonObject);
 
 
-
-
-        //TODO: To remove the below line in SIT, UAT then Production
-        response.headers().set("Access-Control-Allow-Origin", "*");
-
-
-        response.headers().set("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
-        response.headers().set(CONTENT_TYPE, "text/plain");
-        response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
-
-        if (!keepAlive) {
-            ctx.write(response).addListener(ChannelFutureListener.CLOSE);
-        } else {
-            response.headers().set(CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
-            ctx.write(response);
-        }
     }
 
     public void logout(ChannelHandlerContext ctx, HttpRequest req, String accessToken){
-
-        byte[] CONTENT = { 'L', 'o', 'g', 'o', 'f', 'f' };
-
-        if (HttpHeaders.is100ContinueExpected(req)) {
-            ctx.write(new DefaultFullHttpResponse(HTTP_1_1, CONTINUE));
-        }
-        boolean keepAlive = HttpHeaders.isKeepAlive(req);
-        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(CONTENT));
-        response.headers().set(CONTENT_TYPE, "text/plain");
-        response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
-
-        if (!keepAlive) {
-            ctx.write(response).addListener(ChannelFutureListener.CLOSE);
-        } else {
-            response.headers().set(CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
-            ctx.write(response);
-        }
     }
 }

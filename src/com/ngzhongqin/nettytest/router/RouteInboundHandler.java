@@ -34,7 +34,7 @@ public class RouteInboundHandler extends SimpleChannelInboundHandler<FullHttpReq
                     break;
                 case LOGIN:
                     LoginHandler loginHandler = new LoginHandler();
-                    loginHandler.login(ctx,fullHttpRequest,null,null);
+                    loginHandler.login(ctx,fullHttpRequest);
                     break;
                 case LOGOUT:
                     LoginHandler loginHandler1 = new LoginHandler();
